@@ -61,7 +61,7 @@ public class WordCount extends Configured implements Tool {
 
         // 第8步：输出key3 value3. 一定要注意，输出路径是需要不存在的，如果存在就报错
         job.setOutputFormatClass(TextOutputFormat.class);
-        TextOutputFormat.setOutputPath(job, new Path("hdfs://192.168.29.100:8020/test/wcoutput"));
+        TextOutputFormat.setOutputPath(job, new Path("hdfs://192.168.29.100:8020/test/wcoutput1"));
 
         // 提交job任务
         boolean b = job.waitForCompletion(true);
@@ -74,8 +74,8 @@ public class WordCount extends Configured implements Tool {
      */
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-//        conf.set("mapreduce.framework.name", "local");
-//        conf.set("yarn.resourcemanager.hostname", "local");
+        conf.set("mapreduce.framework.name", "local");
+        conf.set("yarn.resourcemanager.hostname", "local");
         conf.set("hello", "world");
 
         // 提交run方法之后，得到一个程序的退出状态码
