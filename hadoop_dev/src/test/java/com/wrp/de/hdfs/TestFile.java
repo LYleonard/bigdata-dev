@@ -21,7 +21,7 @@ public class TestFile {
 
     @Test
     public void testMkdirToHDFS(){
-        String directory = "/test/dd";
+        String directory = "/test/test1";
         hdfsop.mkdirToHdfs(directory);
     }
 }

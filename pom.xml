@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <module>hadoop_hdfs_dev</module>
+        <module>hadoop_dev</module>
     </modules>
 
 

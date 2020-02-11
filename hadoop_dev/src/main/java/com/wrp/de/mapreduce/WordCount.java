@@ -45,7 +45,7 @@ public class WordCount extends Configured implements Tool {
 
         // 第1步：读取文件，解析为key1：value1对， key1：行偏移量，value1：一行文本内容
         job.setInputFormatClass(TextInputFormat.class);
-        TextInputFormat.addInputPath(job, new Path("hdfs://192.168.29.100:8020/test/"));
+        TextInputFormat.addInputPath(job, new Path("hdfs://192.168.29.100:8020/test/wordcount.txt"));
 
         // 第2步：自定义map逻辑类
         job.setMapperClass(MyMapper.class);
@@ -74,6 +74,8 @@ public class WordCount extends Configured implements Tool {
      */
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+//        conf.set("mapreduce.framework.name", "local");
+//        conf.set("yarn.resourcemanager.hostname", "local");
         conf.set("hello", "world");
 
         // 提交run方法之后，得到一个程序的退出状态码
