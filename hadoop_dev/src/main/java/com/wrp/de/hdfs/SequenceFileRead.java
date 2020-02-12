@@ -32,7 +32,7 @@ public class SequenceFileRead {
             // 根据反射，求出key类型
             Writable key = (Writable) ReflectionUtils.newInstance(reader.getKeyClass(), conf);
 
-            // 根据反射，求出key类型
+            // 根据反射，求出value类型
             Writable value = (Writable) ReflectionUtils.newInstance(reader.getValueClass(), conf);
             long position = reader.getPosition();
             System.out.println(position);
