@@ -6,6 +6,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -46,6 +47,11 @@ public class WordCount extends Configured implements Tool {
         // 第1步：读取文件，解析为key1：value1对， key1：行偏移量，value1：一行文本内容
         job.setInputFormatClass(TextInputFormat.class);
         TextInputFormat.addInputPath(job, new Path("hdfs://192.168.29.100:8020/test/wordcount.txt"));
+
+//        //设置输入类型为CombineTextInputFormat，设置虚拟存储切片最大值4M、每个切片处理数据量为4M
+//        job.setInputFormatClass(CombineTextInputFormat.class);
+//        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+//        CombineTextInputFormat.addInputPath(job, new Path("hdfs://192.168.29.100:8020/test/wordcount.txt"));
 
         // 第2步：自定义map逻辑类
         job.setMapperClass(MyMapper.class);
