@@ -1,4 +1,4 @@
-package com.wrp.mapreduce.Serializable;
+package com.wrp.mapreduce.serializable;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
