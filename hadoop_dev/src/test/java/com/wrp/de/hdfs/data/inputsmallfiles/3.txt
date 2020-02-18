@@ -1,0 +1,2 @@
+Hadoop Ozone: An object store for Hadoop.
+Hadoop Submarine: A machine learning engine for Hadoop.
