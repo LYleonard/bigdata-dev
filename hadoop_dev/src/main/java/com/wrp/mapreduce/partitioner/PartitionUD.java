@@ -1,6 +1,6 @@
 package com.wrp.mapreduce.partitioner;
 
-import com.wrp.mapreduce.SerializableFlowBean;
+import com.wrp.mapreduce.Serializable.SerializableFlowBean;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 

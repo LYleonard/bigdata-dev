@@ -1,8 +1,8 @@
 package com.wrp.mapreduce.partitioner;
 
-import com.wrp.mapreduce.SerializableFlowBean;
-import com.wrp.mapreduce.SerializableFlowMapper;
-import com.wrp.mapreduce.SerializableFlowRedurcer;
+import com.wrp.mapreduce.Serializable.SerializableFlowBean;
+import com.wrp.mapreduce.Serializable.SerializableFlowMapper;
+import com.wrp.mapreduce.Serializable.SerializableFlowRedurcer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
