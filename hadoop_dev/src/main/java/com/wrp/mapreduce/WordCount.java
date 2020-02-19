@@ -83,6 +83,13 @@ public class WordCount extends Configured implements Tool {
         conf.set("yarn.resourcemanager.hostname", "local");
         conf.set("hello", "world");
 
+        //设置map阶段的压缩
+        conf.set("mapreduce.map.output.compress", "true");
+        conf.set("mapreduce.map.output.compress.codec", "org.apache.hadoop.io.compress.SnappyCodec");
+        //设置reduce阶段使用压缩式算法
+        conf.set("mapreduce.output.fileoutputformat.compress", "true");
+        conf.set("mapreduce.output.fileoutputformat.compress.codec","org.apache.hadoop.io.compress.SnappyCodec");
+
         // 提交run方法之后，得到一个程序的退出状态码
         int exitStatusCode = ToolRunner.run(conf, new WordCount(), args);
         System.exit(exitStatusCode);
