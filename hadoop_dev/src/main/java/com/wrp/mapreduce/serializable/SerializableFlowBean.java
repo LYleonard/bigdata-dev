@@ -1,7 +1,6 @@
-package com.wrp.mapreduce.Serializable;
+package com.wrp.mapreduce.serializable;
 
 import org.apache.hadoop.io.Writable;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.io.DataInput;
 import java.io.DataOutput;
