@@ -24,19 +24,20 @@ import java.net.URI;
 public class MapJoinMain extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
-        URI uri = new URI("hdfs://192.168.29.110:8020/input/pdts.txt");
+        URI uri = new URI("hdfs://192.168.29.100:8020/input/pdts.txt");
         Configuration conf = super.getConf();
         //添加缓存文件
         DistributedCache.addCacheFile(uri, conf);
         Job job = Job.getInstance(conf, "MapJoin");
 
         job.setInputFormatClass(TextInputFormat.class);
-        TextInputFormat.addInputPath(job, new Path("E:\\develop\\Java\\bigdata-dev\\" +
-                "hadoop_dev\\src\\test\\java\\com\\wrp\\hdfs\\data\\input\\join\\orders.txt"));
+        TextInputFormat.addInputPath(job, new Path("E:\\develop\\Java\\" +
+                "bigdata-dev\\hadoop_dev\\src\\test\\java\\com\\wrp\\hdfs\\data\\" +
+                "input\\join\\orders.txt"));
 
         job.setMapperClass(MapJoinMapper.class);
         job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputKeyClass(NullWritable.class);
+        job.setMapOutputValueClass(NullWritable.class);
 
         job.setOutputFormatClass(TextOutputFormat.class);
         TextOutputFormat.setOutputPath(job, new Path("file:///E:\\develop\\Java\\bigdata-dev\\" +
