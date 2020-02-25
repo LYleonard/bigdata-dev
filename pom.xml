@@ -10,6 +10,7 @@
     <version>1.0</version>
     <modules>
         <module>hadoop_dev</module>
+        <module>hive_dev</module>
     </modules>
 
 
