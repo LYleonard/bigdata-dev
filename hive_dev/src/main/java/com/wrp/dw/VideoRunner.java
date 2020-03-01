@@ -25,13 +25,17 @@ public class VideoRunner extends Configured implements Tool {
         job.setJarByClass(VideoRunner.class);
         job.setInputFormatClass(TextInputFormat.class);
         TextInputFormat.addInputPath(job, new Path(args[0]));
+//        TextInputFormat.addInputPath(job, new Path("file:///E:\\develop\\Java\\bigdata-dev\\hive_dev\\src\\test\\java\\data\\"));
 
         job.setMapperClass(VideoMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(NullWritable.class);
 
+        job.setNumReduceTasks(7);
+
         job.setOutputFormatClass(TextOutputFormat.class);
         TextOutputFormat.setOutputPath(job, new Path(args[1]));
+//        TextOutputFormat.setOutputPath(job, new Path("file:///E:\\develop\\Java\\bigdata-dev\\hive_dev\\src\\test\\java\\output"));
 
         boolean b = job.waitForCompletion(true);
         return b?0:1;
