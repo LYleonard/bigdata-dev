@@ -12,7 +12,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import java.io.IOException;
 
 /**
- * @ClassName HbaseJavaAPI
+ * @ClassName CreateTable
  * @Author LYleonard
  * @Date 2020/3/8 22:52
  * @Description Hbase Java API, 操作数据库
@@ -22,7 +22,7 @@ import java.io.IOException;
  *          第四步：关闭
  * Version 1.0
  **/
-public class HbaseJavaAPI {
+public class CreateTable {
 
     /**
      * 创建一张表  myuser  两个列族  f1   f2
