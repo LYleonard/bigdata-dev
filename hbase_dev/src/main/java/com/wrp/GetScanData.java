@@ -1,7 +1,9 @@
 package com.wrp;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -19,6 +21,13 @@ import java.util.List;
 public class GetScanData {
     private static Connection connection;
     private static final String TABLE_NAME = "myuser";
+
+    public static void setConnection() throws IOException {
+        Configuration configuration = HBaseConfiguration.create();
+        configuration.set("hbase.zookeeper.quorum",
+                "master:2181,slave1:2181,slave2:2181");
+        connection= ConnectionFactory.createConnection(configuration);
+    }
 
     public static void getData(){
         try {
