@@ -23,13 +23,6 @@ public class HbaseCompareFilter {
     private static Connection connection;
     private static final String TABLE_NAME = "myuser";
 
-    public static void setConnection() throws IOException {
-        Configuration configuration = HBaseConfiguration.create();
-        configuration.set("hbase.zookeeper.quorum",
-                "master:2181,slave1:2181,slave2:2181");
-        connection= ConnectionFactory.createConnection(configuration);
-    }
-
     /**
      * 查询所有rowkey小于0003的所有数据
      */
@@ -227,11 +220,11 @@ public class HbaseCompareFilter {
                 if ("age".equals(Bytes.toString(qualifierName)) || "id".equals(Bytes.toString(qualifierName))) {
                     System.out.println("数据rowkey为:" + Bytes.toString(rowkey) + "||" +
                             "列簇为:" + Bytes.toString(familyName) + "||" +
-                            "列名为:" + Bytes.toString(qualifierName) + "||" + "值为:" + Bytes.toInt(qualifierName));
+                            "列名为:" + Bytes.toString(qualifierName) + "||" + "值为:" + Bytes.toInt(value));
                 } else {
                     System.out.println("数据rowkey为:" + Bytes.toString(rowkey) + "||" +
                             "列簇为:" + Bytes.toString(familyName) + "||" +
-                            "列名为:" + Bytes.toString(qualifierName) + "||" + "值为:" + Bytes.toString(qualifierName));
+                            "列名为:" + Bytes.toString(qualifierName) + "||" + "值为:" + Bytes.toString(value));
                 }
             }
         }
@@ -239,6 +232,11 @@ public class HbaseCompareFilter {
 
     public static void main(String[] args) {
         try {
+            Configuration configuration = HBaseConfiguration.create();
+            configuration.set("hbase.zookeeper.quorum",
+                    "master:2181,slave1:2181,slave2:2181");
+            connection= ConnectionFactory.createConnection(configuration);
+
             rowFilter();
             familyFilter();
             qualifierFilter();
@@ -248,7 +246,7 @@ public class HbaseCompareFilter {
             prefixFilter();
             filterList();
 //            deleteData();
-            deleteTable();
+//            deleteTable();
         } catch (IOException e) {
             e.printStackTrace();
         }
