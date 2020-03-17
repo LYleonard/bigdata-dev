@@ -22,15 +22,13 @@ public class GetScanData {
     private static Connection connection;
     private static final String TABLE_NAME = "myuser";
 
-    public static void setConnection() throws IOException {
-        Configuration configuration = HBaseConfiguration.create();
-        configuration.set("hbase.zookeeper.quorum",
-                "master:2181,slave1:2181,slave2:2181");
-        connection= ConnectionFactory.createConnection(configuration);
-    }
-
     public static void getData(){
         try {
+            Configuration configuration = HBaseConfiguration.create();
+            configuration.set("hbase.zookeeper.quorum",
+                    "master:2181,slave1:2181,slave2:2181");
+            connection= ConnectionFactory.createConnection(configuration);
+
             Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
             Get get = new Get(Bytes.toBytes("0003"));
 
@@ -68,6 +66,11 @@ public class GetScanData {
 
     private static void scanData(){
         try {
+            Configuration configuration = HBaseConfiguration.create();
+            configuration.set("hbase.zookeeper.quorum",
+                    "master:2181,slave1:2181,slave2:2181");
+            connection= ConnectionFactory.createConnection(configuration);
+
             Table table = connection.getTable(TableName.valueOf(TABLE_NAME));
             //没有指定startRow以及stopRow  全表扫描
             Scan scan = new Scan();
