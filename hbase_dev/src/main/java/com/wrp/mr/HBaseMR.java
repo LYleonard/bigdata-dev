@@ -1,6 +1,7 @@
 package com.wrp.mr;
 
 import com.wrp.api.CreateTable;
+import com.wrp.api.TableExist;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -28,16 +29,22 @@ import java.io.IOException;
 public class HBaseMR extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
-//        String table = "myuser2";
-//        CreateTable createTable = new CreateTable();
-//        try {
-//            System.out.printf("=============创建表：%s =================", table);
-//            createTable.createTable(table);
-//            System.out.printf("=============创建表：%s 完成==============", table);
-//        } catch (IOException e) {
-//            System.out.printf("=============创建表：%s 错误！============", table);
-//            e.printStackTrace();
-//        }
+        // 如果表不存在，则创建表
+        String table = "myuser2";
+        TableExist tableExist = new TableExist();
+        if (!tableExist.isTableExist(table)) {
+            CreateTable createTable = new CreateTable();
+            try {
+                System.out.printf("=============创建表：%s =================\n", table);
+                createTable.createTable(table);
+                System.out.printf("=============创建表：%s 完成==============\n", table);
+            } catch (IOException e) {
+                System.out.printf("=============创建表：%s 错误！============\n", table);
+                e.printStackTrace();
+            }
+        } else {
+            System.out.printf("表：%s 已经存在！", table);
+        }
 
         System.out.println("=============执行HBase MR程序============");
         Configuration configuration = HBaseConfiguration.create();
