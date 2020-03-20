@@ -18,13 +18,11 @@ import java.io.IOException;
  **/
 public class TableExist {
     public static Configuration configuration;
-    public static String tableName;
     static {
         configuration = HBaseConfiguration.create();
-        tableName = "myuser2";
     }
 
-    public boolean isTableExist() throws IOException {
+    public boolean isTableExist(String tableName) throws IOException {
         Connection connection = ConnectionFactory.createConnection(configuration);
         Admin admin = connection.getAdmin();
         return admin.tableExists(TableName.valueOf(tableName));
