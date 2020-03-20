@@ -27,7 +27,7 @@ public class CreateTable {
     /**
      * 创建一张表  myuser  两个列族  f1   f2
      */
-    public static void createTable(String table) throws IOException {
+    public void createTable(String table) throws IOException {
         Configuration configuration = HBaseConfiguration.create();
         // 连接HBase集群不需要指定HBase主节点的ip地址和端口号
 
@@ -57,7 +57,8 @@ public class CreateTable {
     public static void main(String[] args) {
         try {
             String tableName = "myuser";
-            createTable(tableName);
+            CreateTable createTable = new CreateTable();
+            createTable.createTable(tableName);
         } catch (IOException e) {
             e.printStackTrace();
         }
