@@ -1,4 +1,4 @@
-package com.wrp;
+package com.wrp.api;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
