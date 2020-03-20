@@ -31,8 +31,7 @@ public class CreateTable {
         Configuration configuration = HBaseConfiguration.create();
         // 连接HBase集群不需要指定HBase主节点的ip地址和端口号
 
-        configuration.set("hbase.zookeeper.quorum",
-                "192.168.29.100:2181,192.168.29.101:2181,192.168.29.102:2181");
+        configuration.set("hbase.zookeeper.quorum", "master:2181,slave1:2181,slave2:2181");
 
         // 创建连接对象
         Connection connection = ConnectionFactory.createConnection(configuration);
