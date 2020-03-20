@@ -20,11 +20,22 @@ public class TableExist {
     public static Configuration configuration;
     static {
         configuration = HBaseConfiguration.create();
+        configuration.set("hbase.zookeeper.quorum", "master:2181,slave1:2181,slave2:2181");
     }
 
     public boolean isTableExist(String tableName) throws IOException {
         Connection connection = ConnectionFactory.createConnection(configuration);
         Admin admin = connection.getAdmin();
         return admin.tableExists(TableName.valueOf(tableName));
+    }
+
+    public static void main(String[] args) throws IOException {
+        String table = "myuser2";
+        TableExist tableExist = new TableExist();
+        if (tableExist.isTableExist(table)) {
+            System.out.println("Table has been created!");
+        } else {
+            System.out.println("Table hasn't been created!");
+        }
     }
 }
