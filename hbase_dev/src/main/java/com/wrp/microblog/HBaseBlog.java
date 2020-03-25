@@ -1,8 +1,7 @@
 package com.wrp.microblog;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.NamespaceDescriptor;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -59,5 +58,92 @@ public class HBaseBlog {
         connection.close();
     }
 
+    /**
+     * 创建微博内容表
+     * Table Name   weibo:content
+     * RowKey   用户ID_时间戳
+     * ColumnFamily     info
+     * ColumnLabel      标题,内容,图片
+     * Version     1个版本
+     * @throws IOException
+     */
+    public void createTableContent() throws IOException {
+        Connection connection = getConnection();
+        Admin admin = connection.getAdmin();
 
+        if (!admin.tableExists(TableName.valueOf(WEIBO_CONTENT))) {
+            HTableDescriptor weiboContent = new HTableDescriptor(TableName.valueOf(WEIBO_CONTENT));
+            HColumnDescriptor info = new HColumnDescriptor("info");
+            //指定最小最大版本
+            info.setMinVersions(1);
+            info.setMaxVersions(1);
+            info.setBlockCacheEnabled(true);
+
+            weiboContent.addFamily(info);
+            admin.createTable(weiboContent);
+        }
+        admin.close();
+        connection.close();
+    }
+
+    /**
+     * 创建用户关系表
+     *  Table Name    weibo:relations
+     *  RowKey    用户ID
+     *  ColumnFamily  attends、fans
+     *  ColumnLabel   关注用户ID，粉丝用户ID
+     *  ColumnValue   用户ID
+     *  Version   1个版本
+     * @throws IOException
+     */
+    public void createTableRelations() throws IOException {
+        Connection connection = getConnection();
+        Admin admin = connection.getAdmin();
+
+        if (!admin.tableExists(TableName.valueOf(WEIBO_RELATION))) {
+            HTableDescriptor weiboRelations = new HTableDescriptor(TableName.valueOf(WEIBO_RELATION));
+
+            HColumnDescriptor attends = new HColumnDescriptor("attends");
+            attends.setMinVersions(1);
+            attends.setMaxVersions(1);
+            attends.setBlockCacheEnabled(true);
+
+            HColumnDescriptor fans = new HColumnDescriptor("fans");
+            fans.setMinVersions(1);
+            fans.setMaxVersions(1);
+            fans.setBlockCacheEnabled(true);
+
+            weiboRelations.addFamily(attends);
+            weiboRelations.addFamily(fans);
+            admin.createTable(weiboRelations);
+        }
+    }
+
+    /**
+     *  创建微博收件箱表
+     *  Table Name    weibo:receive_content_email
+     *  RowKey    用户ID
+     *  ColumnFamily  info
+     *  ColumnLabel   用户ID
+     *  ColumnValue   取微博内容的RowKey
+     *  Version   1000
+     * @throws IOException
+     */
+    public void createTabelReceiveContentEmails() throws IOException {
+        Connection connection = getConnection();
+        Admin admin = connection.getAdmin();
+
+        if (!admin.tableExists(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL))) {
+            HTableDescriptor weiboReceiveContentEmail = new HTableDescriptor(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL));
+            HColumnDescriptor info = new HColumnDescriptor("info");
+            info.setMinVersions(1000);
+            info.setMaxVersions(1000);
+            info.setBlockCacheEnabled(true);
+
+            weiboReceiveContentEmail.addFamily(info);
+            admin.createTable(weiboReceiveContentEmail);
+        }
+        admin.close();
+        connection.close();
+    }
 }
