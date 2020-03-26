@@ -2,11 +2,12 @@ package com.wrp.microblog;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.PrefixFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName HBaseBlog
@@ -146,4 +147,124 @@ public class HBaseBlog {
         admin.close();
         connection.close();
     }
+
+    /**
+     * 发送微博内容
+     * 1. 将uid微博内容添加到content表
+     * 2. 从relation表中，获得uid的粉丝有哪些fan_uids
+     * 3. fan_uids中，每个fan_uid插入数据，uid发送微博时的rowkey
+     */
+    public void publishWeibo(String uid, String centent) throws IOException {
+        //第一步，添加uid的微博到content表
+        Connection connection = getConnection();
+        Table weiboContent = connection.getTable(TableName.valueOf(WEIBO_CONTENT));
+        long timeStamp = System.currentTimeMillis();
+
+        // put 内容到content表，rowkey由uid_timestamp构成
+        String rowkey = uid + "_" + timeStamp;
+        Put put = new Put(rowkey.getBytes());
+        put.addColumn("info".getBytes(), "content".getBytes(), timeStamp, centent.getBytes());
+        weiboContent.put(put);
+
+        // 第二步，从relation表中获取uid的粉丝的fan_uids
+        Table relationTable = connection.getTable(TableName.valueOf(WEIBO_RELATION));
+        Get get = new Get(uid.getBytes());
+        get.addFamily("fans".getBytes());
+        Result result = relationTable.get(get);
+        if (result.isEmpty()) {
+            weiboContent.close();
+            relationTable.close();
+            connection.close();
+        }
+        Cell[] cells = result.rawCells();
+        List<byte[]> fan_uids = new ArrayList<>();
+        for (Cell cell : cells) {
+            byte[] fan_uid = CellUtil.cloneQualifier(cell);
+            fan_uids.add(fan_uid);
+        }
+
+        //第三步，向fan_uids中每个fan_uid插入uid发送微博内容的rowkey（微博的rowkey）
+        Table receiveTable = connection.getTable(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL));
+        List<Put> putList = new ArrayList<>();
+        for (byte[] fan_uid : fan_uids) {
+            // 每个fan_uid put一次
+            Put put1 = new Put(fan_uid);
+            put1.addColumn("info".getBytes(), uid.getBytes(), timeStamp, rowkey.getBytes());
+            putList.add(put1);
+        }
+        receiveTable.put(putList);
+        //释放资源
+        weiboContent.close();
+        receiveTable.close();
+        receiveTable.close();
+        connection.close();
+    }
+
+    /**
+     * 添加关注用户，一次可能添加多个关注用户
+     * A 关注一批用户 B,C ,D
+     * 第一步：A是B,C,D的关注者   在weibo:relations 当中attend列族当中以A作为rowkey，
+     *         B,C,D作为列名，B,C,D作为列值，保存起来
+     * 第二步：B,C,D都会多一个粉丝A  在weibo:relations 当中fans列族当中分别以B,C,D作为rowkey，
+     *         A作为列名，A作为列值，保存起来
+     * 第三步：A需要获取B,C,D 的微博内容存放到 receive_content_email 表当中去，以A作为rowkey，
+     *         B,C,D作为列名，获取B,C,D发布的微博rowkey，放到对应的列值里面去
+     * @param uid
+     * @param attends
+     * @throws IOException
+     */
+    public void addAttends(String uid, String... attends) throws IOException {
+        // 1. 把uid关注别人的行为写入relation表的attend列簇下，被关注人的uid直接作为列名
+        Connection connection = getConnection();
+        Table relationTable = connection.getTable(TableName.valueOf(WEIBO_RELATION));
+
+        Put put = new Put(uid.getBytes());
+        for (String attend : attends) {
+            Put put1 = new Put(uid.getBytes());
+            put.addColumn("attends".getBytes(), attend.getBytes(), attend.getBytes());
+        }
+        relationTable.put(put);
+
+        // 2. 将attends获得一个粉丝的业务逻辑，在relation表fans列簇中，添加uid列和列值uid
+        for (String attend : attends) {
+            Put put1 = new Put(attend.getBytes());
+            put1.addColumn("fans".getBytes(), uid.getBytes(), uid.getBytes());
+            relationTable.put(put1);
+        }
+
+        // 3. 在content表中查询attends中被关注的每个人发微博的rowkey
+        Table contentTable = connection.getTable(TableName.valueOf(WEIBO_CONTENT));
+        Scan scan = new Scan();
+        ArrayList<byte[]> rowkeyBytes = new ArrayList<>();
+        for (String attend : attends) {
+            // attend -> 被关注人的uid
+            PrefixFilter prefixFilter = new PrefixFilter((attend + "_").getBytes());
+            scan.setFilter(prefixFilter);
+            ResultScanner scanner = contentTable.getScanner(scan);
+            if (null == scanner) {
+                continue;
+            }
+            for (Result result : scanner) {
+                byte[] rowkeyWeiboContent = result.getRow();
+                rowkeyBytes.add(rowkeyWeiboContent);
+            }
+        }
+
+        // 4. 将被关注的每个人发微博的rowkey写入email表
+        Table receiveEmailTable = connection.getTable(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL));
+        if (rowkeyBytes.size() > 0) {
+            Put put2 = new Put(uid.getBytes());
+            for (byte[] rowkeyWeiboContent2 : rowkeyBytes) {
+                String rowkeyContent = rowkeyWeiboContent2.toString();
+                String[] split = rowkeyContent.split("_");
+                put2.addColumn("info".getBytes(), split[0].getBytes(), Long.parseLong(split[1]), rowkeyWeiboContent2);
+            }
+            receiveEmailTable.put(put2);
+        }
+        contentTable.close();
+        relationTable.close();
+        receiveEmailTable.close();
+        connection.close();
+    }
+
 }
