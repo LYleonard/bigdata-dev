@@ -4,6 +4,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -267,4 +268,101 @@ public class HBaseBlog {
         connection.close();
     }
 
+    /**
+     * 取消关注: 如A取消关注 B,C,D这三个用户
+     * 其实逻辑与关注B,C,D相反即可
+     * 第一步：在weibo:relation关系表当中，在attends列族当中删除B,C,D这三个列
+     * 第二步：在weibo:relation关系表当中，在fans列族当中，以B,C,D为rowkey，查找fans列族当中A这个粉丝，并删除掉
+     * 第三步：A取消关注B,C,D,在收件箱中，删除取关的人的微博的rowkey
+     */
+    public void cancelAttend(String uid, String... attends) throws IOException {
+        // 在relation表中删除关注的人
+        Connection connection = getConnection();
+        Table relationTable = connection.getTable(TableName.valueOf(WEIBO_RELATION));
+        Delete delete = new Delete(uid.getBytes());
+
+        for (String cancelAttend : attends) {
+            // 删除列的最新版本：该表的列只有一个版本
+            delete.addColumn("attends".getBytes(), cancelAttend.getBytes());
+        }
+        relationTable.delete(delete);
+
+        // 在relation表中删除attends的fans的uid
+        for (String cancelAttend : attends) {
+            Delete delete1 = new Delete(cancelAttend.getBytes());
+            delete1.addColumn("fans".getBytes(), uid.getBytes());
+            relationTable.delete(delete1);
+        }
+
+        // 在receiveEmail表中删除uid的attends相关的列
+        Table receiveEmailTable = connection.getTable(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL));
+        Delete delete2 = new Delete(uid.getBytes());
+        for (String attend : attends) {
+            // 删除列的所有版本
+            delete.addColumns("info".getBytes(), attend.getBytes());
+        }
+        receiveEmailTable.delete(delete2);
+
+        relationTable.close();
+        receiveEmailTable.close();
+        connection.close();
+    }
+
+    /**
+     * 获取关注的人的微博内容
+     * 例如A用户刷新微博，拉取他所有关注人的微博内容
+     * A 从 weibo:receive_content_email  表当中获取所有关注人的rowkey
+     * 通过rowkey从weibo:content表当中获取微博内容
+     */
+    public void getContent(String uid) throws IOException {
+        // 从ReceiveEmail表中获取uid所有的值，即uid关注的人的所有微博的rowkey
+        Connection connection = getConnection();
+        Table receiveEmailTable = connection.getTable(TableName.valueOf(WEIBO_RECEIVE_CONTENT_EMAIL));
+        Get get = new Get(uid.getBytes());
+        get.setMaxVersions(5);
+
+        Result result = receiveEmailTable.get(get);
+        Cell[] cells = result.rawCells();
+        ArrayList<Get> gets = new ArrayList<>();
+        for (Cell cell : cells) {
+            byte[] bytes = CellUtil.cloneValue(cell);
+            Get get1 = new Get(bytes);
+            gets.add(get1);
+        }
+
+        // 根据rowkey，去content表中拉取微博内容
+        Table contentTable = connection.getTable(TableName.valueOf(WEIBO_CONTENT));
+        Result[] results = contentTable.get(gets);
+        for (Result result1 : results) {
+            byte[] content = result1.getValue("info".getBytes(), "content".getBytes());
+            System.out.println(Bytes.toString(content));
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        HBaseBlog hBaseBlog = new HBaseBlog();
+        // 创建命名空间
+        hBaseBlog.createNameSpace();
+
+        // 创建微博内容表
+        hBaseBlog.createTableContent();
+
+        // 创建微博关系表
+        hBaseBlog.createTableRelations();
+
+        // 创建收件箱表
+        hBaseBlog.createTabelReceiveContentEmails();
+
+        // 发微博
+        hBaseBlog.publishWeibo("2", "今天测试了一天代码，终于测通了");
+
+        // 关注别人: 如1 关注 2, 3, M等人
+        hBaseBlog.addAttends("1", "2", "3", "M");
+
+        // 取消关注
+        hBaseBlog.cancelAttend("1", "M");
+
+        // 获取某人关注的人发的微博
+        hBaseBlog.getContent("1");
+    }
 }
