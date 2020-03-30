@@ -176,6 +176,7 @@ public class HBaseBlog {
             weiboContent.close();
             relationTable.close();
             connection.close();
+            return;
         }
         Cell[] cells = result.rawCells();
         List<byte[]> fan_uids = new ArrayList<>();
@@ -221,7 +222,6 @@ public class HBaseBlog {
 
         Put put = new Put(uid.getBytes());
         for (String attend : attends) {
-            Put put1 = new Put(uid.getBytes());
             put.addColumn("attends".getBytes(), attend.getBytes(), attend.getBytes());
         }
         relationTable.put(put);
@@ -256,7 +256,7 @@ public class HBaseBlog {
         if (rowkeyBytes.size() > 0) {
             Put put2 = new Put(uid.getBytes());
             for (byte[] rowkeyWeiboContent2 : rowkeyBytes) {
-                String rowkeyContent = rowkeyWeiboContent2.toString();
+                String rowkeyContent = Bytes.toString(rowkeyWeiboContent2);
                 String[] split = rowkeyContent.split("_");
                 put2.addColumn("info".getBytes(), split[0].getBytes(), Long.parseLong(split[1]), rowkeyWeiboContent2);
             }
@@ -284,8 +284,9 @@ public class HBaseBlog {
         for (String cancelAttend : attends) {
             // 删除列的最新版本：该表的列只有一个版本
             delete.addColumn("attends".getBytes(), cancelAttend.getBytes());
+            relationTable.delete(delete);
         }
-        relationTable.delete(delete);
+
 
         // 在relation表中删除attends的fans的uid
         for (String cancelAttend : attends) {
@@ -339,6 +340,11 @@ public class HBaseBlog {
         }
     }
 
+    /**
+     * 入口程序
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         HBaseBlog hBaseBlog = new HBaseBlog();
         // 创建命名空间
@@ -355,6 +361,7 @@ public class HBaseBlog {
 
         // 发微博
         hBaseBlog.publishWeibo("2", "今天测试了一天代码，终于测通了");
+//        hBaseBlog.publishWeibo("3", "今天实施大数据集群迁云，代码修改。");
 
         // 关注别人: 如1 关注 2, 3, M等人
         hBaseBlog.addAttends("1", "2", "3", "M");
