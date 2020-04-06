@@ -12,6 +12,7 @@
         <module>hadoop_dev</module>
         <module>hive_dev</module>
         <module>hbase_dev</module>
+        <module>flume_dev</module>
     </modules>
 
 
