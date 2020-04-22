@@ -82,6 +82,11 @@ public class CopyFiles2DatePartitionDir {
         }
     }
 
+    /**
+     * hadoop jar hadoop-dev-1.0.jar com.wrp.hdfs.CopyFiles2DatePartitionDir
+     * /warehouse/tablespace/managed/hive/dc.db/dc_tb_dx_cd/ /tmp/export/dc_tb_dx_cd/ year_month=
+     * @param args
+     */
     public static void main(String[] args) {
         String src = args[0];
         String dest = args[0];
