@@ -3,13 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bigdata-developer</artifactId>
+        <artifactId>hive_dev</artifactId>
         <groupId>com.wrp.de</groupId>
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>impala</artifactId>
+
     <repositories>
         <repository>
             <id>cloudera</id>
@@ -28,11 +29,6 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>2.6.0-cdh5.14.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-common</artifactId>
             <version>1.1.0-cdh5.14.2</version>
@@ -45,16 +41,6 @@
         <dependency>
             <groupId>org.apache.hive</groupId>
             <artifactId>hive-service</artifactId>
-            <version>1.1.0-cdh5.14.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-jdbc</artifactId>
-            <version>1.1.0-cdh5.14.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-exec</artifactId>
             <version>1.1.0-cdh5.14.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.thrift/libfb303 -->
