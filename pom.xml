@@ -13,6 +13,7 @@
         <module>hive_dev</module>
         <module>hbase_dev</module>
         <module>flume_dev</module>
+        <module>scala</module>
     </modules>
 
 
