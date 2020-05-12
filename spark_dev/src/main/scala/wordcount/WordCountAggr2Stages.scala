@@ -10,6 +10,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   *              (2) 对数据进行 reduceByKey(func)
   *              (3) 将  随机值+key 转成 key
   *              (4) 再对数据进行 reduceByKey(func)
+  * 注：这里使用的是reduceByKey本身具有调优的效果，若使用groupBykey，那么发生数据倾斜的概率会更大，更严重。
   */
 object WordCountAggr2Stages {
   def main(args: Array[String]): Unit = {
