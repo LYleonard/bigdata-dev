@@ -1,4 +1,4 @@
-package wordcount
+package tuning
 
 import org.apache.spark.{SparkConf, SparkContext}
 
