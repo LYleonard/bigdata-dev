@@ -11,6 +11,12 @@
 
     <artifactId>spark_dev</artifactId>
 
+    <properties>
+        <scala.version>2.11.8</scala.version>
+        <spark.version>2.3.3</spark.version>
+        <spark.tags>2.11</spark.tags>
+    </properties>
+
     <repositories>
         <repository>
             <id>aliyunmaven</id>
@@ -22,14 +28,19 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.11</artifactId>
-            <version>2.3.3</version>
+            <artifactId>spark-core_${spark.tags}</artifactId>
+            <version>${spark.version}</version>
             <!--<exclusions>-->
                 <!--<exclusion>-->
                     <!--<artifactId>jackson-databind</artifactId>-->
                     <!--<groupId>com.fasterxml.jackson.core</groupId>-->
                 <!--</exclusion>-->
             <!--</exclusions>-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${spark.tags}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
