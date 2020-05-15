@@ -28,7 +28,7 @@ public class MapSideJoin {
         final JavaRDD<String> account = sparkContext.textFile("E:\\downloads\\accounts.csv");
         final JavaPairRDD<Long, String> accountRDD = account.mapToPair(new PairFunction<String, Long, String>() {
             public Tuple2<Long, String> call(String s) throws Exception {
-                Long id = (long) Integer.parseInt(s.split(",")[0]);
+                Long id = (long) Integer.parseInt(s.split(",")[0].replaceAll("\\\"",""));
                 return new Tuple2<Long, String>(id, s);
             }
         });
@@ -36,7 +36,7 @@ public class MapSideJoin {
         JavaRDD<String> order = sparkContext.textFile("E:\\downloads\\orders.csv");
         JavaPairRDD<Long, String> orderRDD = order.mapToPair(new PairFunction<String, Long, String>() {
             public Tuple2<Long, String> call(String s) throws Exception {
-                Long accountId = (long) Integer.parseInt(s.split(",")[1]);
+                Long accountId = (long) Integer.parseInt(s.split(",")[1].replaceAll("\\\"", ""));
                 return new Tuple2<Long, String>(accountId, s);
             }
         });
@@ -68,12 +68,16 @@ public class MapSideJoin {
                         // 从account数据Map中，根据key获取到可以join到的数据
                         String accountValue = accountRDD1Map.get(key);
                         return new Tuple2<String, Tuple2<String, String>>(key.toString(),
-                                new Tuple2<String, String>(value, accountValue));
+                                new Tuple2<String, String>(accountValue, value));
                     }
                 });
         // 上面的做法，仅仅适用于rdd1中的key没有重复，全部是唯一的场景。
         // 如果rdd1中有多个相同的key，那么就得用flatMap类的操作，
         // 在进行join的时候不能用map，而是得遍历rdd1所有数据进行join。
         // rdd2中每条数据都可能会返回多条join后的数据。
+        List<Tuple2<String, Tuple2<String, String>>> results = accountJoinOrder.collect();
+        for (Tuple2<String, Tuple2<String, String>> result : results) {
+            System.out.println("result: " + result);
+        }
     }
 }
