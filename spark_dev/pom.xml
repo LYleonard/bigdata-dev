@@ -17,14 +17,6 @@
         <spark.tags>2.11</spark.tags>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>aliyunmaven</id>
-            <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/nexus/content/repositories/central</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -41,6 +33,17 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_${spark.tags}</artifactId>
             <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${spark.tags}</artifactId>
+            <version>${spark.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
