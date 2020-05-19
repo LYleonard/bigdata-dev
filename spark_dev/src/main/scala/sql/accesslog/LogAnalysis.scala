@@ -20,7 +20,11 @@ object LogAnalysis {
   properties.setProperty("password", "243015")
 
   def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+//      .registerKryoClasses(Array(classOf[AccessLog], classOf[MyClass1])) // 注册要序列化的自定义类型
     val spark = SparkSession.builder().appName("AccessLogAnalysis")
+//      .config("spark.serializer", "orh.apache.spark.serializer.KryoSerializer")// 设置序列化器为KryoSerializer
+      .config(conf)
       .master("local[*]").getOrCreate()
 
     val sc = spark.sparkContext
