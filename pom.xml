@@ -15,6 +15,7 @@
         <module>flume_dev</module>
         <module>scala</module>
         <module>spark_dev</module>
+        <module>kafka_dev</module>
     </modules>
 
 
