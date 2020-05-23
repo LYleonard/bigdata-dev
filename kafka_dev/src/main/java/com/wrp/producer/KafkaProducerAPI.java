@@ -45,6 +45,9 @@ public class KafkaProducerAPI {
         // 可延长多久发送数据， 默认为0：表示不等待立即发送
         props.put("linger.ms", 1);
 
+        //在Properties对象中添加自定义分区类
+        props.put("partitioner.class", "com.wrp.partitioner.MyPartitioner");
+
         // 指定key、value的序列化器
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
