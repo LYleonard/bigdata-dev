@@ -42,6 +42,13 @@
             <artifactId>spark-sql_${spark.tags}</artifactId>
             <version>${spark.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-hive_${spark.tags}</artifactId>
