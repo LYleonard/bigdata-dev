@@ -99,6 +99,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>fastutil</groupId>
             <artifactId>fastutil</artifactId>
             <version>5.0.9</version>
