@@ -1,6 +1,6 @@
 package streaming.kafka
 
-import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord}
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkConf
@@ -22,11 +22,11 @@ object KafkaDirect10 {
     //使用direct方式接收kafka数据
     val topic = Set("test")
     val kafkaParas = Map(
-      "bootstrap.servers" -> "master:9092,slave1:9092,slave2:9092",
-      "group.id" -> "KafkaDirect10",
-      "key.deserializer" -> classOf[StringDeserializer],
-      "value.deserializer" -> classOf[StringDeserializer],
-      "enable.auto.commit" -> "false"
+      ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "master:9092,slave1:9092,slave2:9092",
+      ConsumerConfig.GROUP_ID_CONFIG -> "KafkaDirect10",
+      ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
+      ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
+      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false"
     )
     val kafkaDStream: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream[String, String](
       ssc,
