@@ -104,6 +104,22 @@
             <version>1.0.1</version>
         </dependency>
 
+        <!-- Approach 1: Flume-style Push-based Approach -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-flume_2.11</artifactId>
+            <version>2.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Approach 2: Pull-based Approach using a Custom Sink -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-flume-sink_2.11</artifactId>
+            <version>2.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>fastutil</groupId>
             <artifactId>fastutil</artifactId>
