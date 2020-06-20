@@ -16,6 +16,7 @@
         <module>scala</module>
         <module>spark_dev</module>
         <module>kafka_dev</module>
+        <module>flink_dev</module>
     </modules>
 
 
