@@ -1,4 +1,4 @@
-package io.wrp
+package io.wrp.sources
 
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.windowing.time.Time
@@ -10,7 +10,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
   */
 
 case class WordCount(word: String, count: Long)
-object FlinkCount {
+object SocketSource {
   def main(args: Array[String]): Unit = {
     val environment: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
 

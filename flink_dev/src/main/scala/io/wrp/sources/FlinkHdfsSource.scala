@@ -1,4 +1,4 @@
-package io.wrp
+package io.wrp.sources
 
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 
