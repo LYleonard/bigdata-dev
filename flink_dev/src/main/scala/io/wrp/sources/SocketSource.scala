@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
 /**
   * @author LYleonard
   * @date 2020/6/20 17:27
-  * @description TODO
+  * @description 从Socket中获取数据
   */
 
 case class WordCount(word: String, count: Long)
