@@ -17,6 +17,7 @@
         <module>spark_dev</module>
         <module>kafka_dev</module>
         <module>flink_dev</module>
+        <module>es_dev</module>
     </modules>
 
     <dependencies>
