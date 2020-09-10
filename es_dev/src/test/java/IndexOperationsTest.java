@@ -3,12 +3,17 @@ import io.wrp.Person;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.common.xcontent.XContent;
@@ -18,6 +23,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -280,7 +286,7 @@ public class IndexOperationsTest {
     @Test
     public void fuzzyQuery(){
         SearchResponse searchResponse = client.prepareSearch("indexsearch")
-                .setSearchType("mysearch").setQuery(QueryBuilders
+                .setTypes("mysearch").setQuery(QueryBuilders
                         .fuzzyQuery("say", "helOL").fuzziness(Fuzziness.TWO))
                 .get();
 
@@ -349,4 +355,68 @@ public class IndexOperationsTest {
         }
         client.close();
     }
+
+    /**
+     * 高亮查询
+     */
+    @Test
+    public void highLight() {
+        // 设置查询需要高亮的字段
+        SearchRequestBuilder requestBuilder = client.prepareSearch("indexsearch")
+                .setTypes("mysearch").setQuery(QueryBuilders.termQuery("say", "hello"));
+        // 设置字段高亮的前缀和后缀
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field("say").preTags("<front style='color:red'").postTags("</front>");
+
+        //通过高亮查询数据
+        SearchResponse searchResponse = requestBuilder.highlighter(highlightBuilder).get();
+        SearchHits hits = searchResponse.getHits();
+        System.out.println("查询共：" + hits.getTotalHits() + "条数据！");
+        for (SearchHit hit : hits) {
+            // 打印没有高亮显示的数据
+            System.out.println(hit.getSourceAsString());
+            System.out.println("++++++++++++++++++++++");
+
+            //打印高亮显示的数据
+            Text[] says = hit.getHighlightFields().get("say").getFragments();
+            for (Text say : says) {
+                System.out.println("say:" + say);
+            }
+        }
+        client.close();
+    }
+
+    /**
+     * 更新索引
+     */
+    @Test
+    public void updateIndex() {
+        Person person = new Person(5, "爱因斯坦", 99, 1, "卡洛杉矶",
+                "18399998888", "aiyin@qq.com", "广义相对论");
+        client.prepareUpdate().setIndex("indexsearch").setType("mysearch").setId("5")
+                .setDoc(JSONObject.toJSONString(person), XContentType.JSON).get();
+
+        client.close();
+    }
+
+
+    /**
+     * 删除索引
+     */
+    @Test
+    public void deleteById() {
+        DeleteResponse deleteResponse = client.prepareDelete("indexsearch", "mysearch", "11").get();
+        client.close();
+    }
+
+    /**
+     * 删除整个索引库
+     */
+    @Test
+    public  void  deleteIndex(){
+        AcknowledgedResponse indexsearch = client.admin().indices().prepareDelete("blog01").execute().actionGet();
+        client.close();
+    }
+
+
 }
