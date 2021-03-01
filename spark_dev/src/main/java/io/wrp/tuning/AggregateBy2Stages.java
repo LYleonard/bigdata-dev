@@ -1,4 +1,4 @@
-package tuning;
+package io.wrp.tuning;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * @ClassName tuning.AggregateBy2Stages
+ * @ClassName io.wrp.tuning.AggregateBy2Stages
  * @Author LYleonard
  * @Date 2020/5/12 11:56
  * @Description 两阶段聚合（局部聚合+全局聚合）解决数据倾斜问题

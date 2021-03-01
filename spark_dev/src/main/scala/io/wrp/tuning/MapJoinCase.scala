@@ -1,4 +1,4 @@
-package tuning
+package io.wrp.tuning
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}

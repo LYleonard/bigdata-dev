@@ -1,3 +1,5 @@
+package io.wrp;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -13,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @ClassName JavaWordCount
+ * @ClassName io.wrp.JavaWordCount
  * @Author LYleonard
  * @Date 2020/5/9 11:02
  * @Description TODO
