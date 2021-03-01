@@ -24,7 +24,7 @@ public class KafkaConsumerAPI {
         properties.put("group.id", "consumer-test");
         //自动提交偏移量
         properties.put("enable.auto.commit", "true");
-        // 自动提交偏移量的书剑间隔
+        // 自动提交偏移量的时间间隔
         properties.put("auto.commit.interval.ms", "1000");
         /**
          * 默认是latest

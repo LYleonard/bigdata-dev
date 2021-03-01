@@ -9,6 +9,7 @@ import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
+import org.apache.kafka.clients.consumer.ConsumerConfig
 
 /**
  * @author DELL
@@ -48,8 +49,11 @@ object KafkaSource {
      * kafka consumer
      */
     val properties = new Properties()
-    properties.setProperty("bootstrap.servers", "hadoop01:9092")
-    properties.setProperty("group.id", "flink_consumer")
+    properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "hadoop01:9092,hadoop02:9092,hadoop03:9092")
+    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "flink_consumer1")
+    properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+    properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
+    properties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000")
     properties.setProperty("key.deserializer",
       "org.apache.kafka.common.serialization.StringDeserializer")
     properties.setProperty("value.deserializer",
