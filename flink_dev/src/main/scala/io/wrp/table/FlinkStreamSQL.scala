@@ -33,8 +33,16 @@ object FlinkStreamSQL {
     val sink: CsvTableSink = new CsvTableSink("D:\\test\\flink\\sink.csv",
       "|", 1, WriteMode.OVERWRITE)
 
+    //AppendMode
+    //将表附加到流数据，表当中只能有查询或者添加操作，如果有update或者delete操作，那么就会失败
     val result: DataStream[User] = tableEnv.toAppendStream(table)
+
+    //RetraceMode
+    //始终可以使用此模式。返回值是boolean类型。
+    // 它用true或false来标记数据的插入和撤回，返回true代表数据插入，false代表数据的撤回
+    val result2: DataStream[(Boolean, User)] = tableEnv.toRetractStream[User](table)
     result.print()
+    result2.print()
     env.execute()
   }
 }
