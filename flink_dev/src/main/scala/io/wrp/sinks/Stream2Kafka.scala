@@ -7,14 +7,10 @@ import org.apache.flink.runtime.state.memory.MemoryStateBackend
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
-<<<<<<< HEAD
-//import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer
-=======
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer
 import org.apache.flink.streaming.connectors.kafka.internals.KeyedSerializationSchemaWrapper
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
->>>>>>> 153d121f038434d2eff3d33bd9a2dc0eedb87726
 
 /**
   * @author LYleonard
@@ -23,7 +19,6 @@ import org.apache.kafka.clients.producer.ProducerConfig
   */
 object Stream2Kafka {
   def main(args: Array[String]): Unit = {
-<<<<<<< HEAD
 //
 //    val env = StreamExecutionEnvironment.getExecutionEnvironment
 //    import org.apache.flink.api.scala._
@@ -37,7 +32,6 @@ object Stream2Kafka {
 //    stream.addSink(producer)
 //
 //    env.execute()
-=======
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     import org.apache.flink.api.scala._
@@ -76,7 +70,6 @@ object Stream2Kafka {
     stream.addSink(producer)
 
     env.execute()
->>>>>>> 153d121f038434d2eff3d33bd9a2dc0eedb87726
   }
 
 }

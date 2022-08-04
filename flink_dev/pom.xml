@@ -47,7 +47,6 @@
         <!-- 集成kafka0.11版本 -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-<<<<<<< HEAD
             <artifactId>flink-connector-kafka-0.11_2.11</artifactId>
             <version>1.8.1</version>
         </dependency>
@@ -62,10 +61,7 @@
             <version>1.7.25</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
-=======
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka_2.11</artifactId>
             <version>${flink.version}</version>
         </dependency>
@@ -140,9 +136,7 @@
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
             <scope>provided</scope>
->>>>>>> 153d121f038434d2eff3d33bd9a2dc0eedb87726
         </dependency>
-
 
     </dependencies>
 
